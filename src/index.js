@@ -18,6 +18,7 @@ function inputValue(event) {
     return;
   }
   countriesItemRef.innerHTML = '';
+  searchFormRef.reset();
   fetchCountries(name).then(res => {
     if (res.length === 1) {
       countryMarkup(res);
