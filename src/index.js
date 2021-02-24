@@ -1,21 +1,22 @@
 import './styles.css';
-import './styles.css';
 import fetchCountries from './js/fetchCountries';
 import countryTpl from './templates/country.hbs';
 import countriesTpl from './templates/countries.hbs';
-var { error } = require('@pnotify/core');
-// var { defaults } = require('@pnotify/core');
-var debounce = require('lodash.debounce');
+import { error } from '@pnotify/core';
+import debounce from 'lodash.debounce';
 
 const searchFormRef = document.querySelector('.js-search-form');
 const countriesItemRef = document.querySelector('.countries');
-
+searchFormRef.addEventListener('submit', event => {
+  event.preventDefault();
+});
 searchFormRef.addEventListener('input', debounce(inputValue, 1000));
 
 function inputValue(event) {
-  event.preventDefault();
-
-  const name = event.target.value;
+  const name = event.target.value.trim();
+  if (!name) {
+    return;
+  }
   countriesItemRef.innerHTML = '';
   fetchCountries(name).then(res => {
     if (res.length === 1) {
@@ -29,7 +30,7 @@ function inputValue(event) {
         type: 'error',
         styling: 'brighttheme',
       });
-    } else if (res.status === 404) {
+    } else if (!res.length) {
       error({
         text: 'No country has been found. Please enter a more specific query!',
         delay: 3000,
